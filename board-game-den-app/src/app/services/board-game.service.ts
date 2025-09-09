@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BoardGameProductsResponse } from '../models/board-game.models';
@@ -14,6 +14,13 @@ export class BoardGameService {
     private readonly CACHE_DURATION_MINUTES = 5; //5 minutes for now
 
     constructor(private http: HttpClient) { }
+
+    private getHeaders(): HttpHeaders {
+        return new HttpHeaders({
+            'X-API-Key': environment.apiKey,
+            'Content-Type': 'application/json'
+        });
+    }
 
     //Cache the results for time stipulated above 
     getProducts(forceRefresh: boolean = false): Observable<BoardGameProductsResponse> {
@@ -34,8 +41,9 @@ export class BoardGameService {
 
     private fetchFromApi(): Observable<BoardGameProductsResponse> {
 
+        const headers = this.getHeaders();
 
-        return this.http.get<BoardGameProductsResponse>(this.apiUrl).pipe(
+        return this.http.get<BoardGameProductsResponse>(this.apiUrl,{ headers }).pipe(
             tap(response => {
                 // Store in the cache when Api call succeeds
                 this.cachedProducts = response;
