@@ -4,13 +4,16 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Board Game Den Api", Version = "v1" });
 });
+
+// Project services and allied classes
+builder.Services.AddHttpClient<IBoardGameService, BoardGameService>();
+builder.Services.AddScoped<IBoardGameService, BoardGameService>();
 
 builder.Services.AddCors(options =>
 {
