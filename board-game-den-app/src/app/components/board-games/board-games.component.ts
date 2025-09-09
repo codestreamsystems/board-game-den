@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
+import { FormsModule } from '@angular/forms';
 import { ColDef, GridReadyEvent, GridApi, ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { BoardGameService } from '../../services/board-game.service';
 import { BoardGameModel, BoardGameProductsResponse } from '../../models/board-game.models';
@@ -11,13 +12,15 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 @Component({
   selector: 'app-board-games',
   standalone: true,
-  imports: [CommonModule, AgGridAngular],
+  imports: [CommonModule, AgGridAngular, FormsModule],
   templateUrl: './board-games.component.html',
   styleUrl: './board-games.component.css'
 })
 export class BoardGamesComponent implements OnInit {
   private gridApi!: GridApi;
   private allRowData: BoardGameModel[] = []; // Store original data
+
+  searchText: string = '';
 
   // Setup the AG Grid properties
   rowData: BoardGameModel[] = [];
@@ -26,11 +29,11 @@ export class BoardGamesComponent implements OnInit {
   totalCount = 0;
   fetchedAt: Date | null = null;
 
-  // Complete column definitions
+  // Column definitions, may want to click image to display larger image?
   colDefs: ColDef[] = [
-    { 
-      field: 'thumbnail', 
-      headerName: 'Image', 
+    {
+      field: 'thumbnail',
+      headerName: '',
       width: 120,
       sortable: false,
       filter: false,
@@ -51,9 +54,9 @@ export class BoardGamesComponent implements OnInit {
         return '<div class="flex items-center justify-center h-full text-gray-400 text-sm">No Image</div>';
       }
     },
-    { 
-      field: 'name', 
-      headerName: 'Product Title', 
+    {
+      field: 'name',
+      headerName: 'Product',
       flex: 1,
       sortable: true,
       filter: true,
@@ -65,23 +68,23 @@ export class BoardGamesComponent implements OnInit {
         `;
       }
     },
-    { 
-      field: 'salePrice', 
-      headerName: 'Sale Price', 
+    {
+      field: 'salePrice',
+      headerName: 'Sale Price',
       width: 140,
       sortable: true,
       filter: 'agNumberColumnFilter',
       cellRenderer: (params: any) => {
         return `
           <div class="flex items-center justify-end h-full">
-            <span class="text-gray-700 font-mono text-sm">$${params.value.toFixed(2)}</span>
+            <span class="text-gray-700 font-mono text-sm">R${params.value.toFixed(2)}</span>
           </div>
         `;
       }
     },
-    { 
-      field: 'ourPrice', 
-      headerName: 'Our Sale Price', 
+    {
+      field: 'ourPrice',
+      headerName: 'Our Sale Price',
       width: 160,
       sortable: true,
       filter: 'agNumberColumnFilter',
@@ -89,7 +92,7 @@ export class BoardGamesComponent implements OnInit {
         return `
           <div class="flex items-center justify-end h-full">
             <div class="bg-green-50 border border-green-200 rounded-md px-3 py-1">
-              <span class="text-green-800 font-semibold font-mono text-sm">$${params.value.toFixed(2)}</span>
+              <span class="text-green-800 font-semibold font-mono text-sm">R${params.value.toFixed(2)}</span>
             </div>
           </div>
         `;
@@ -118,8 +121,8 @@ export class BoardGamesComponent implements OnInit {
 
     this.boardGameService.getProducts().subscribe({
       next: (response: BoardGameProductsResponse) => {
-        this.allRowData = response.products; // ✅ Store original data here!
-        this.rowData = response.products;     // ✅ Display data
+        this.allRowData = response.products; // Copy and store original data for when we reset
+        this.rowData = response.products;     // Data to be displayed on grid
         this.totalCount = response.totalCount;
         this.fetchedAt = new Date(response.fetchedAt);
         this.loading = false;
@@ -134,13 +137,25 @@ export class BoardGamesComponent implements OnInit {
 
   onSearch(searchTerm: string): void {
     if (searchTerm.trim()) {
-      // Filter the original data
-      this.rowData = this.allRowData.filter(game => 
+      this.rowData = this.allRowData.filter(game =>
         game.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     } else {
-      // Show all data when search is empty
-      this.rowData = [...this.allRowData];
+      // All data when search is empty or clered
+      this.resetGrid();
     }
   }
+
+  // Clear search text from textbox
+  clearSearch(inputElement: HTMLInputElement): void {
+    inputElement.value = '';
+    this.searchText = ''; 
+    this.resetGrid();
+  }
+
+  // Reset grid and show all data
+  resetGrid(): void {
+    this.rowData = [...this.allRowData];
+  }
+
 }

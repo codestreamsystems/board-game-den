@@ -1,99 +1,100 @@
 <!-- Header -->
 <header class="bg-white shadow-sm border-b">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between items-center py-6">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Board Game Den</h1>
-        <p class="text-gray-600 mt-1">Sales Representative Dashboard</p>
-      </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Board Game Den</h1>
+                <p class="text-gray-600 mt-1">Sales Representative Dashboard</p>
+            </div>
+        </div>
     </div>
-  </div>
 </header>
 
 <!-- Main -->
 <main class="flex-1 bg-gray-50 py-8">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    
-    <!-- Filter Area -->
-    <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
-      <div class="flex items-end gap-4">
-        <div class="flex-1">
-          <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-            Search Products
-          </label>
-          <input 
-            #searchInput
-            id="search"
-            type="text" 
-            placeholder="Search by product name..."
-            class="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Filter -->
+        <div class="bg-white rounded-lg shadow-sm border p-6 mb-8">
+            <div class="flex items-end gap-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
+                        Search Products
+                    </label>
+                    <div class="relative">
+                        <input #searchInput [(ngModel)]="searchText" id="search" type="text"
+                            placeholder="Search by product name..."
+                            class="w-full border border-gray-300 rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <!-- Clear Icon to clear text -->
+                        <button *ngIf="searchText && searchText.length > 0" (click)="clearSearch(searchInput)"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                            type="button" aria-label="Clear search">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <button (click)="onSearch(searchInput.value)"
+                    class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium">
+                    Search
+                </button>
+            </div>
         </div>
-        <button 
-          (click)="onSearch(searchInput.value)"
-          class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors font-medium"
-        >
-          Search
-        </button>
-      </div>
-    </div>
 
-    <div *ngIf="loading" class="bg-white rounded-lg shadow-sm border p-12 text-center">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
-      <p class="text-gray-600">Loading products...</p>
-    </div>
+        <div *ngIf="loading" class="bg-white rounded-lg shadow-sm border p-12 text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+            <p class="text-gray-600">Loading products...</p>
+        </div>
 
-    <!-- When Error -->
-    <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
-      <div class="flex items-center text-red-800">
-        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-        </svg>
-        {{ error }}
-      </div>
-    </div>
+        <!-- When Error -->
+        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+            <div class="flex items-center text-red-800">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                {{ error }}
+            </div>
+        </div>
 
-<!-- AG Grid Container -->
-<div *ngIf="!loading && !error" class="bg-white rounded-lg shadow-sm border">
-  <div class="w-full h-[600px] p-4">
-    <div class="ag-theme-alpine h-full w-full">
-      <ag-grid-angular
-        class="h-full w-full"
-        [rowData]="rowData"
-        [columnDefs]="colDefs"
-        [defaultColDef]="defaultColDef"
-        [pagination]="true"
-        [paginationPageSize]="25"
-        [animateRows]="true"
-        [rowHeight]="80"
-        [headerHeight]="40"
-        [suppressHorizontalScroll]="false"
-        [suppressRowVirtualisation]="false"
-        (gridReady)="onGridReady($event)">
-      </ag-grid-angular>
-    </div>
-  </div>
-</div>
+        <!-- AG Grid -->
+        <div *ngIf="!loading && !error" class="bg-white rounded-lg shadow-sm border">
+            <div class="w-full h-[600px] p-4">
+                <div class="ag-theme-alpine h-full w-full">
+                    <ag-grid-angular class="h-full w-full" [rowData]="rowData" [columnDefs]="colDefs"
+                        [defaultColDef]="defaultColDef" [pagination]="true" [paginationPageSize]="20"
+                        [animateRows]="true" [rowHeight]="80" [headerHeight]="40" [suppressHorizontalScroll]="false"
+                        [suppressRowVirtualisation]="false" (gridReady)="onGridReady($event)">
+                    </ag-grid-angular>
+                </div>
+            </div>
+        </div>
 
-    <!-- No Results -->
-    <div *ngIf="!loading && totalCount === 0 && !error" class="bg-white rounded-lg shadow-sm border p-12 text-center">
-      <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-4h-2M6 9h2"></path>
-      </svg>
-      <h3 class="text-lg font-medium text-gray-900 mb-1">No products found</h3>
-      <p class="text-gray-500">Try adjusting your search criteria</p>
+        <!-- No Results for search -->
+        <div *ngIf="!loading && totalCount === 0 && !error"
+            class="bg-white rounded-lg shadow-sm border p-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-4h-2M6 9h2">
+                </path>
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900 mb-1">No products found</h3>
+            <p class="text-gray-500">Try adjusting your search criteria</p>
+        </div>
+
     </div>
-    
-  </div>
 </main>
 
 <footer class="bg-white border-t">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <div class="flex justify-between items-center">
-      <p class="text-gray-500 text-sm">© 2025 Board Game Den. All rights reserved.</p>
-      <p class="text-gray-500 text-sm" *ngIf="fetchedAt">
-        Last updated: {{ fetchedAt | date:'short' }}
-      </p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex justify-between items-center">
+            <p class="text-gray-500 text-sm">© 2025 Board Game Den. All rights reserved.</p>
+            <p class="text-gray-500 text-sm" *ngIf="fetchedAt">
+                Last updated: {{ fetchedAt | date:'short' }}
+            </p>
+        </div>
     </div>
-  </div>
 </footer>
