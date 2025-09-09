@@ -12,9 +12,6 @@ export class BoardGameService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Get all board game products
-   */
   getProducts(): Observable<BoardGameProductsResponse> {
     return this.http.get<BoardGameProductsResponse>(this.apiUrl);
   }

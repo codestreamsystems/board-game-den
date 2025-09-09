@@ -53,21 +53,27 @@
       </div>
     </div>
 
-    <!-- AG Grid Container -->
-    <div *ngIf="!loading && !error" class="bg-white rounded-lg shadow-sm border overflow-hidden">
-      <div class="ag-theme-alpine" style="height: 600px; width: 100%;">
-        <ag-grid-angular
-          [rowData]="rowData"
-          [columnDefs]="colDefs"
-          [defaultColDef]="defaultColDef"
-          [pagination]="true"
-          [paginationPageSize]="25"
-          [animateRows]="true"
-          [rowHeight]="80"
-          (gridReady)="onGridReady($event)">
-        </ag-grid-angular>
-      </div>
+<!-- AG Grid Container -->
+<div *ngIf="!loading && !error" class="bg-white rounded-lg shadow-sm border">
+  <div class="w-full h-[600px] p-4">
+    <div class="ag-theme-alpine h-full w-full">
+      <ag-grid-angular
+        class="h-full w-full"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="25"
+        [animateRows]="true"
+        [rowHeight]="80"
+        [headerHeight]="40"
+        [suppressHorizontalScroll]="false"
+        [suppressRowVirtualisation]="false"
+        (gridReady)="onGridReady($event)">
+      </ag-grid-angular>
     </div>
+  </div>
+</div>
 
     <!-- No Results -->
     <div *ngIf="!loading && totalCount === 0 && !error" class="bg-white rounded-lg shadow-sm border p-12 text-center">
