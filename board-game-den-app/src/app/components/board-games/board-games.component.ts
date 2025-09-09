@@ -20,10 +20,10 @@ export class BoardGamesComponent implements OnInit {
   private gridApi!: GridApi;
   private allRowData: BoardGameModel[] = []; // Store original data
 
-  searchText: string = '';
-
   // Setup the AG Grid properties
   rowData: BoardGameModel[] = [];
+
+  searchText: string = '';
   loading = false;
   error: string | null = null;
   totalCount = 0;
@@ -115,11 +115,11 @@ export class BoardGamesComponent implements OnInit {
     this.gridApi.sizeColumnsToFit();
   }
 
-  loadBoardGames(): void {
+  loadBoardGames(forceRefresh: boolean = false): void {
     this.loading = true;
     this.error = null;
 
-    this.boardGameService.getProducts().subscribe({
+    this.boardGameService.getProducts(forceRefresh).subscribe({
       next: (response: BoardGameProductsResponse) => {
         this.allRowData = response.products; // Copy and store original data for when we reset
         this.rowData = response.products;     // Data to be displayed on grid
@@ -141,7 +141,7 @@ export class BoardGamesComponent implements OnInit {
         game.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     } else {
-      // All data when search is empty or clered
+      // Display All data when search is empty or clered
       this.resetGrid();
     }
   }
@@ -149,13 +149,22 @@ export class BoardGamesComponent implements OnInit {
   // Clear search text from textbox
   clearSearch(inputElement: HTMLInputElement): void {
     inputElement.value = '';
-    this.searchText = ''; 
+    this.searchText = '';
     this.resetGrid();
   }
 
   // Reset grid and show all data
   resetGrid(): void {
     this.rowData = [...this.allRowData];
+  }
+
+  refreshData(): void {
+    this.loadBoardGames(true); // Force refresh from Api
+  }
+
+  // Clear the cache
+  clearCache(): void {
+    this.boardGameService.clearCache();
   }
 
 }
