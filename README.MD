@@ -10,6 +10,12 @@ A simple web application for sales representatives to view a list of board game 
 - Allows searching and filtering of products
 - Uses simple forntend caching to improve performance
 
+## What This Project Does NOT HAVE
+
+Due to the nature of this exercise, it's simplicity and time constraints, this project has no unit, integration or front end tests
+
+However, it's important to note that in a real-world production environment, comprehensive testing would be absolutely essential. A proper implementation would include unit tests for all services, components, and business logic; integration tests for API endpoints and data flow; end-to-end tests for critical user journeys; and performance tests for load handling and response times. Testing is a crucial part of professional software development, ensuring code quality, preventing regressions, and maintaining system reliability. This project's lack of tests is purely for demonstration purposes and should not be considered a best practice. In professional settings, I would advocate for test-driven development (TDD) and maintain high test coverage to ensure robust, maintainable code.
+
 ## Prerequisites
 
 Before running this project, make sure you have installed:
