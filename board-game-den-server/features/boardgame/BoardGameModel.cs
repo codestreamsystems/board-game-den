@@ -12,5 +12,5 @@ public class BoardGameModel
     public string Thumbnail2 { get; set; } = string.Empty;
     public string MainImage { get; set; } = string.Empty;
     public decimal SalePrice { get; set; }
-    public decimal OurPrice => Math.Round(SalePrice * 1.1m, 2);
+    public decimal OurPrice => Math.Round(SalePrice * 1.1m, 2,MidpointRounding.AwayFromZero);
 }
